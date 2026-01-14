@@ -42,12 +42,12 @@ export default function LoginPage() {
             <div className="w-full max-w-md animate-in fade-in slide-in-from-bottom-8 duration-700">
                 {/* Logo Section */}
                 <div className="flex flex-col items-center mb-10">
-                    <Link href="/" className="flex flex-col items-center -space-y-1 group">
-                        <div className="flex items-baseline">
-                            <span className="text-3xl font-black text-primary tracking-tighter transition-all group-hover:tracking-normal">BA</span>
-                            <span className="text-3xl font-light text-foreground tracking-widest ml-1 uppercase">Global</span>
-                        </div>
-                        <span className="text-[10px] text-primary/60 font-medium tracking-[0.2em] uppercase">Fintech & Comex</span>
+                    <Link href="/" className="group">
+                        <img
+                            src="/logo.png"
+                            alt="BAGLOBAL"
+                            className="h-20 md:h-24 w-auto transform transition-transform group-hover:scale-105"
+                        />
                     </Link>
                 </div>
 
