@@ -451,6 +451,32 @@ export function Institutional() {
 }
 
 export function Contact() {
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    const handleSubmit = async (e: any) => {
+        e.preventDefault();
+        const form = e.target;
+        const data = new FormData(form);
+
+        try {
+            const response = await fetch("https://formspree.io/f/contato@baglobal.com.br", {
+                method: "POST",
+                body: data,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            if (response.ok) {
+                setIsSubmitted(true);
+                form.reset();
+            } else {
+                alert("Ocorreu um erro ao enviar. Por favor, tente novamente ou use o e-mail oficial.");
+            }
+        } catch (error) {
+            alert("Erro de conexão. Verifique sua internet.");
+        }
+    };
+
     return (
         <section id="contato" className="py-24 relative">
             <div className="container mx-auto px-6 max-w-[1200px]">
@@ -481,50 +507,71 @@ export function Contact() {
                             </div>
                         </div>
 
-                        <form className="space-y-6 bg-background-base/50 p-8 rounded-3xl border border-secondary-lighter">
-                            <div className="grid md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase tracking-wider text-foreground/60">Nome completo*</label>
-                                    <input type="text" placeholder="Seu nome" className="w-full bg-secondary border border-secondary-lighter rounded-xl px-4 py-3 text-sm focus:border-primary focus:outline-none transition-colors" required />
+                        {isSubmitted ? (
+                            <div className="bg-background-base/50 p-12 rounded-3xl border border-primary/30 text-center space-y-4 animate-in fade-in zoom-in duration-500">
+                                <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto text-primary mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                    </svg>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase tracking-wider text-foreground/60">Empresa*</label>
-                                    <input type="text" placeholder="Nome da empresa" className="w-full bg-secondary border border-secondary-lighter rounded-xl px-4 py-3 text-sm focus:border-primary focus:outline-none transition-colors" required />
+                                <h3 className="text-2xl font-bold">Solicitação enviada!</h3>
+                                <p className="text-foreground-muted">Recebemos sua mensagem. Em breve um de nossos especialistas entrará em contato.</p>
+                                <button
+                                    onClick={() => setIsSubmitted(false)}
+                                    className="text-primary hover:underline text-sm font-bold pt-4"
+                                >
+                                    Enviar outra mensagem
+                                </button>
+                            </div>
+                        ) : (
+                            <form
+                                className="space-y-6 bg-background-base/50 p-8 rounded-3xl border border-secondary-lighter"
+                                onSubmit={handleSubmit}
+                            >
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-foreground/60">Nome completo*</label>
+                                        <input type="text" name="nome" placeholder="Seu nome" className="w-full bg-secondary border border-secondary-lighter rounded-xl px-4 py-3 text-sm focus:border-primary focus:outline-none transition-colors" required />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-foreground/60">Empresa*</label>
+                                        <input type="text" name="empresa" placeholder="Nome da empresa" className="w-full bg-secondary border border-secondary-lighter rounded-xl px-4 py-3 text-sm focus:border-primary focus:outline-none transition-colors" required />
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="grid md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase tracking-wider text-foreground/60">E-mail*</label>
-                                    <input type="email" placeholder="email@empresa.com" className="w-full bg-secondary border border-secondary-lighter rounded-xl px-4 py-3 text-sm focus:border-primary focus:outline-none transition-colors" required />
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-foreground/60">E-mail*</label>
+                                        <input type="email" name="email" placeholder="email@empresa.com" className="w-full bg-secondary border border-secondary-lighter rounded-xl px-4 py-3 text-sm focus:border-primary focus:outline-none transition-colors" required />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-xs font-bold uppercase tracking-wider text-foreground/60">WhatsApp*</label>
+                                        <input type="tel" name="whatsapp" placeholder="(00) 00000-0000" className="w-full bg-secondary border border-secondary-lighter rounded-xl px-4 py-3 text-sm focus:border-primary focus:outline-none transition-colors" required />
+                                    </div>
                                 </div>
+
                                 <div className="space-y-2">
-                                    <label className="text-xs font-bold uppercase tracking-wider text-foreground/60">WhatsApp*</label>
-                                    <input type="tel" placeholder="(00) 00000-0000" className="w-full bg-secondary border border-secondary-lighter rounded-xl px-4 py-3 text-sm focus:border-primary focus:outline-none transition-colors" required />
+                                    <label className="text-xs font-bold uppercase tracking-wider text-foreground/60">Tipo de necessidade*</label>
+                                    <select name="necessidade" className="w-full bg-secondary border border-secondary-lighter rounded-xl px-4 py-3 text-sm focus:border-primary focus:outline-none transition-colors text-foreground/70 appearance-none">
+                                        <option>Gestão de pagamentos</option>
+                                        <option>Antecipação</option>
+                                        <option>Pagamentos USD/USDt</option>
+                                        <option>Outro</option>
+                                    </select>
                                 </div>
-                            </div>
 
-                            <div className="space-y-2">
-                                <label className="text-xs font-bold uppercase tracking-wider text-foreground/60">Tipo de necessidade*</label>
-                                <select className="w-full bg-secondary border border-secondary-lighter rounded-xl px-4 py-3 text-sm focus:border-primary focus:outline-none transition-colors text-foreground/70 appearance-none">
-                                    <option>Gestão de pagamentos</option>
-                                    <option>Antecipação</option>
-                                    <option>Pagamentos USD/USDt</option>
-                                    <option>Outro</option>
-                                </select>
-                            </div>
+                                <div className="flex items-start space-x-3 pt-4">
+                                    <input type="checkbox" className="mt-1 accent-primary rounded" required />
+                                    <span className="text-xs text-foreground/50 leading-relaxed">
+                                        Concordo com a <Link href="/privacy" className="text-primary hover:underline">Política de Privacidade</Link> e autorizo o contato.
+                                    </span>
+                                </div>
 
-                            <div className="flex items-start space-x-3 pt-4">
-                                <input type="checkbox" className="mt-1 accent-primary rounded" required />
-                                <span className="text-xs text-foreground/50 leading-relaxed">
-                                    Concordo com a <Link href="/privacy" className="text-primary hover:underline">Política de Privacidade</Link> e autorizo o contato.
-                                </span>
-                            </div>
-
-                            <button type="submit" className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all transform hover:-translate-y-1">
-                                Enviar solicitação
-                            </button>
-                        </form>
+                                <button type="submit" className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all transform hover:-translate-y-1">
+                                    Enviar solicitação
+                                </button>
+                            </form>
+                        )}
                     </div>
                 </div>
             </div>
