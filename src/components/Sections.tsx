@@ -30,8 +30,14 @@ export function Header() {
                 }`}
         >
             <div className="container mx-auto px-6 flex items-center justify-between max-w-[1200px]">
-                <Link href="/" className="flex items-center">
-                    <img src="/logo.png" alt="BAGLOBAL" className="h-14 md:h-20 w-auto" />
+                <Link href="/" className="flex items-center group">
+                    <div className="flex flex-col items-start -space-y-1">
+                        <div className="flex items-baseline">
+                            <span className="text-2xl md:text-3xl font-black text-primary tracking-tighter transition-all group-hover:tracking-normal">BA</span>
+                            <span className="text-2xl md:text-3xl font-light text-foreground tracking-widest ml-1 uppercase">Global</span>
+                        </div>
+                        <span className="text-[10px] text-primary/60 font-medium tracking-[0.2em] uppercase ml-1">Fintech & Comex</span>
+                    </div>
                 </Link>
 
                 {/* Desktop Nav */}
@@ -78,10 +84,31 @@ export function Header() {
 export function Hero() {
     return (
         <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 overflow-hidden">
-            {/* Background Decorative Element */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10 opacity-20 pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 blur-[120px] rounded-full" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-secondary-lighter/10 blur-[120px] rounded-full" />
+            {/* Background Image Container */}
+            <div className="absolute inset-0 -z-10 bg-background-base">
+                {/* Connected World Background */}
+                <div
+                    className="absolute inset-0 opacity-40 mix-blend-screen pointer-events-none bg-center bg-cover bg-no-repeat"
+                    style={{ backgroundImage: 'url("/hero-bg.png")' }}
+                />
+
+                {/* Primary Mesh Overlay */}
+                <div className="absolute top-[-10%] left-[-10%] w-[70%] h-[70%] bg-primary/10 blur-[130px] rounded-full animate-blob pointer-events-none" />
+                <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] bg-secondary-lighter/10 blur-[130px] rounded-full animate-blob animation-delay-2000 pointer-events-none" />
+                <div className="absolute top-[20%] right-[10%] w-[40%] h-[40%] bg-primary/5 blur-[100px] rounded-full animate-blob animation-delay-4000 pointer-events-none" />
+
+                {/* Subtle Grid Overlay */}
+                <div
+                    className="absolute inset-0 opacity-[0.1] pointer-events-none"
+                    style={{
+                        backgroundImage: `linear-gradient(to right, #404040 1px, transparent 1px), linear-gradient(to bottom, #404040 1px, transparent 1px)`,
+                        backgroundSize: '80px 80px',
+                        maskImage: 'radial-gradient(ellipse at center, black, transparent 90%)'
+                    }}
+                />
+
+                {/* Noise Texture */}
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} />
             </div>
 
             <div className="container mx-auto px-6 max-w-[1200px] text-center md:text-left">
@@ -496,8 +523,14 @@ export function Footer() {
         <footer className="py-12 border-t border-secondary-lighter">
             <div className="container mx-auto px-6 max-w-[1200px]">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
-                    <Link href="/" className="flex items-center">
-                        <img src="/logo.png" alt="BAGLOBAL" className="h-12 w-auto opacity-70 grayscale hover:grayscale-0 transition-all" />
+                    <Link href="/" className="flex items-center group">
+                        <div className="flex flex-col items-start -space-y-1">
+                            <div className="flex items-baseline">
+                                <span className="text-xl md:text-2xl font-black text-primary tracking-tighter transition-all group-hover:tracking-normal">BA</span>
+                                <span className="text-xl md:text-2xl font-light text-foreground tracking-widest ml-1 uppercase">Global</span>
+                            </div>
+                            <span className="text-[8px] text-primary/60 font-medium tracking-[0.2em] uppercase ml-1">Fintech & Comex</span>
+                        </div>
                     </Link>
 
                     <div className="flex flex-wrap justify-center gap-8 text-sm text-foreground/50">
