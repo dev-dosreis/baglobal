@@ -13,6 +13,7 @@ const navLinks = [
 
 export function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -22,6 +23,8 @@ export function Header() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
+    const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+
     return (
         <header
             className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
@@ -30,13 +33,13 @@ export function Header() {
                 }`}
         >
             <div className="container mx-auto px-6 flex items-center justify-between max-w-[1200px]">
-                <Link href="/" className="flex items-center group">
+                <Link href="/" className="flex items-center group relative z-[60]">
                     <div className="flex flex-col items-start -space-y-1">
                         <div className="flex items-baseline">
-                            <span className="text-2xl md:text-3xl font-black text-primary tracking-tighter transition-all group-hover:tracking-normal">BA</span>
-                            <span className="text-2xl md:text-3xl font-light text-foreground tracking-widest ml-1 uppercase">Global</span>
+                            <span className="text-xl md:text-3xl font-black text-primary tracking-tighter transition-all group-hover:tracking-normal">BA</span>
+                            <span className="text-xl md:text-3xl font-light text-foreground tracking-widest ml-1 uppercase">Global</span>
                         </div>
-                        <span className="text-[10px] text-primary/60 font-medium tracking-[0.2em] uppercase ml-1">Fintech & Comex</span>
+                        <span className="text-[9px] md:text-[10px] text-primary/60 font-medium tracking-[0.2em] uppercase ml-1">Fintech & Comex</span>
                     </div>
                 </Link>
 
@@ -59,23 +62,46 @@ export function Header() {
                     </Link>
                 </nav>
 
-                {/* Mobile Nav Toggle (Simplified for MVP) */}
-                <button className="md:hidden text-foreground">
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                    >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                        />
-                    </svg>
+                {/* Mobile Nav Toggle */}
+                <button
+                    className="md:hidden text-foreground relative z-[60] p-2"
+                    onClick={toggleMobileMenu}
+                    aria-label="Toggle Menu"
+                >
+                    {isMobileMenuOpen ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-primary">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                    )}
                 </button>
+
+                {/* Mobile Menu Overlay */}
+                <div className={`fixed inset-0 bg-background-base/95 backdrop-blur-xl z-[55] flex flex-col items-center justify-center transition-all duration-500 ease-in-out md:hidden ${isMobileMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"
+                    }`}>
+                    <nav className="flex flex-col items-center space-y-8">
+                        {navLinks.map((link) => (
+                            <Link
+                                key={link.name}
+                                href={link.href}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="text-2xl font-bold text-foreground hover:text-primary transition-colors"
+                            >
+                                {link.name}
+                            </Link>
+                        ))}
+                        <Link
+                            href="#contato"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="bg-primary hover:bg-primary-dark text-white px-10 py-4 rounded-2xl text-lg font-bold transition-all shadow-xl shadow-primary/20"
+                        >
+                            Solicitar contato
+                        </Link>
+                    </nav>
+                </div>
             </div>
         </header>
     );
@@ -118,7 +144,7 @@ export function Hero() {
                         <span className="text-xs font-medium text-foreground/80 tracking-wide uppercase">Página institucional oficial</span>
                     </div>
 
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.1] mb-6 tracking-tight">
+                    <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.1] mb-6 tracking-tight">
                         Pagamentos internacionais e gestão financeira para operações de <span className="text-primary text-glow">comércio exterior.</span>
                     </h1>
 
@@ -225,11 +251,11 @@ export function Solutions() {
                     <p className="text-3xl md:text-5xl font-bold">O que resolvemos</p>
                 </div>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {solutions.map((item, index) => (
                         <div
                             key={index}
-                            className="bg-secondary p-8 rounded-2xl border border-secondary-lighter hover:border-primary/50 transition-all duration-300 group"
+                            className="bg-secondary p-6 md:p-8 rounded-2xl border border-secondary-lighter hover:border-primary/50 transition-all duration-300 group"
                         >
                             <div className="mb-6 transform group-hover:scale-110 transition-transform duration-300">
                                 {item.icon}
@@ -278,16 +304,16 @@ export function Timeline() {
                     {/* Horizontal Line for Desktop */}
                     <div className="hidden lg:block absolute top-12 left-0 w-full h-px bg-secondary-lighter" />
 
-                    <div className="grid lg:grid-cols-4 gap-12 lg:gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
                         {steps.map((step, index) => (
-                            <div key={index} className="relative group">
+                            <div key={index} className="relative group text-center lg:text-left flex flex-col items-center lg:items-start">
                                 <div className="mb-8 relative z-10">
-                                    <div className="w-24 h-24 bg-secondary rounded-2xl border border-secondary-lighter flex items-center justify-center text-4xl font-bold text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                                    <div className="w-20 h-20 md:w-24 md:h-24 bg-secondary rounded-2xl border border-secondary-lighter flex items-center justify-center text-3xl md:text-4xl font-bold text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
                                         {index + 1}
                                     </div>
                                 </div>
                                 <h3 className="text-xl font-bold mb-4 group-hover:text-primary transition-colors">{step.title}</h3>
-                                <p className="text-foreground-muted leading-relaxed">
+                                <p className="text-foreground-muted leading-relaxed max-w-[280px] lg:max-w-none">
                                     {step.description}
                                 </p>
                             </div>
@@ -340,9 +366,9 @@ export function Compliance() {
                         </div>
                     </div>
 
-                    <div className="grid sm:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         {points.map((point, index) => (
-                            <div key={index} className="bg-secondary p-8 rounded-2xl border border-secondary-lighter shadow-sm">
+                            <div key={index} className="bg-secondary p-6 md:p-8 rounded-2xl border border-secondary-lighter shadow-sm">
                                 <h3 className="text-lg font-bold mb-3">{point.title}</h3>
                                 <p className="text-foreground-muted text-sm border-l-2 border-primary/30 pl-4">
                                     {point.description}
