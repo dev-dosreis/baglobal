@@ -34,11 +34,15 @@ export function Header() {
         >
             <div className="container mx-auto px-6 flex items-center justify-between max-w-[1200px]">
                 <Link href="/" className="flex items-center group relative z-[60]">
-                    <img
-                        src="/logo-official.jpg"
-                        alt="BAGLOBAL"
-                        className="h-10 md:h-12 w-auto object-contain brightness-110"
-                    />
+                    <div className="flex flex-col items-start -space-y-2">
+                        <div className="flex items-baseline font-bold tracking-[-0.04em] text-2xl md:text-3xl">
+                            <span className="text-primary uppercase">BA</span>
+                            <span className="text-foreground/90 uppercase">GLOBAL</span>
+                        </div>
+                        <span className="text-[8px] md:text-[10px] text-foreground/40 font-medium tracking-[0.4em] uppercase ml-0.5">
+                            Digital Solutions
+                        </span>
+                    </div>
                 </Link>
 
                 {/* Desktop Nav */}
@@ -612,11 +616,15 @@ export function Footer() {
             <div className="container mx-auto px-6 max-w-[1200px]">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
                     <Link href="/" className="flex items-center group">
-                        <img
-                            src="/logo-official.jpg"
-                            alt="BAGLOBAL"
-                            className="h-10 md:h-12 w-auto object-contain opacity-80 group-hover:opacity-100 transition-opacity"
-                        />
+                        <div className="flex flex-col items-start -space-y-2">
+                            <div className="flex items-baseline font-bold tracking-[-0.04em] text-xl md:text-2xl">
+                                <span className="text-primary uppercase">BA</span>
+                                <span className="text-foreground/90 uppercase">GLOBAL</span>
+                            </div>
+                            <span className="text-[7px] md:text-[9px] text-foreground/40 font-medium tracking-[0.4em] uppercase ml-0.5">
+                                Digital Solutions
+                            </span>
+                        </div>
                     </Link>
 
                     <div className="flex flex-wrap justify-center gap-8 text-sm text-foreground/50">
