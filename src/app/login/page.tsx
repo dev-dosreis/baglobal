@@ -44,9 +44,9 @@ export default function LoginPage() {
                 <div className="flex flex-col items-center mb-10">
                     <Link href="/" className="group">
                         <img
-                            src="/logo.png"
+                            src="/logo-official.jpg"
                             alt="BAGLOBAL"
-                            className="h-20 md:h-24 w-auto transform transition-transform group-hover:scale-105"
+                            className="h-16 md:h-20 w-auto transform transition-transform group-hover:scale-105 object-contain"
                         />
                     </Link>
                 </div>

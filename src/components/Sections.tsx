@@ -34,13 +34,11 @@ export function Header() {
         >
             <div className="container mx-auto px-6 flex items-center justify-between max-w-[1200px]">
                 <Link href="/" className="flex items-center group relative z-[60]">
-                    <div className="flex flex-col items-start -space-y-1.5">
-                        <div className="flex items-baseline">
-                            <span className="text-2xl md:text-4xl font-black text-primary tracking-tighter transition-all group-hover:tracking-normal">BA</span>
-                            <span className="text-2xl md:text-4xl font-light text-foreground tracking-[0.1em] ml-1 uppercase">Global</span>
-                        </div>
-                        <span className="text-[9px] md:text-[11px] text-primary/70 font-bold tracking-[0.25em] uppercase ml-1.5">Fintech & Comex</span>
-                    </div>
+                    <img
+                        src="/logo-official.jpg"
+                        alt="BAGLOBAL"
+                        className="h-10 md:h-12 w-auto object-contain brightness-110"
+                    />
                 </Link>
 
                 {/* Desktop Nav */}
@@ -614,13 +612,11 @@ export function Footer() {
             <div className="container mx-auto px-6 max-w-[1200px]">
                 <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
                     <Link href="/" className="flex items-center group">
-                        <div className="flex flex-col items-start -space-y-1.5">
-                            <div className="flex items-baseline">
-                                <span className="text-xl md:text-3xl font-black text-primary tracking-tighter transition-all group-hover:tracking-normal">BA</span>
-                                <span className="text-xl md:text-3xl font-light text-foreground tracking-[0.1em] ml-1 uppercase">Global</span>
-                            </div>
-                            <span className="text-[9px] md:text-[11px] text-primary/70 font-bold tracking-[0.25em] uppercase ml-1.5">Fintech & Comex</span>
-                        </div>
+                        <img
+                            src="/logo-official.jpg"
+                            alt="BAGLOBAL"
+                            className="h-10 md:h-12 w-auto object-contain opacity-80 group-hover:opacity-100 transition-opacity"
+                        />
                     </Link>
 
                     <div className="flex flex-wrap justify-center gap-8 text-sm text-foreground/50">
