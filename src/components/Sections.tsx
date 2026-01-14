@@ -54,12 +54,20 @@ export function Header() {
                             {link.name}
                         </Link>
                     ))}
-                    <Link
-                        href="#contato"
-                        className="bg-primary hover:bg-primary-dark text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-primary/20"
-                    >
-                        Solicitar contato
-                    </Link>
+                    <div className="flex items-center space-x-4 pl-4 border-l border-secondary-lighter">
+                        <Link
+                            href="/login"
+                            className="text-sm font-semibold text-foreground/80 hover:text-primary transition-colors"
+                        >
+                            Login
+                        </Link>
+                        <Link
+                            href="#contato"
+                            className="bg-primary hover:bg-primary-dark text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all shadow-lg shadow-primary/20"
+                        >
+                            Solicitar contato
+                        </Link>
+                    </div>
                 </nav>
 
                 {/* Mobile Nav Toggle */}
@@ -93,13 +101,22 @@ export function Header() {
                                 {link.name}
                             </Link>
                         ))}
-                        <Link
-                            href="#contato"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className="bg-primary hover:bg-primary-dark text-white px-10 py-4 rounded-2xl text-lg font-bold transition-all shadow-xl shadow-primary/20"
-                        >
-                            Solicitar contato
-                        </Link>
+                        <div className="flex flex-col items-center space-y-6 pt-6 border-t border-secondary-lighter w-full max-w-[200px]">
+                            <Link
+                                href="/login"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="text-xl font-bold text-foreground/70 hover:text-primary transition-colors"
+                            >
+                                Área do Cliente
+                            </Link>
+                            <Link
+                                href="#contato"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="bg-primary hover:bg-primary-dark text-white px-10 py-4 rounded-2xl text-lg font-bold transition-all shadow-xl shadow-primary/20 w-full text-center"
+                            >
+                                Solicitar contato
+                            </Link>
+                        </div>
                     </nav>
                 </div>
             </div>
