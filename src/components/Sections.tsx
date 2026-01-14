@@ -419,21 +419,21 @@ export function Institutional() {
                             <div className="bg-background-base/50 p-8 rounded-2xl border border-secondary-lighter">
                                 <h3 className="text-sm font-semibold uppercase tracking-widest text-primary mb-6">Dados Institucionais</h3>
                                 <div className="space-y-4 text-sm">
-                                    <div className="flex justify-between border-b border-secondary-lighter pb-2">
+                                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-secondary-lighter pb-2 gap-1 sm:gap-4">
                                         <span className="text-foreground/40">Posicionamento</span>
-                                        <span className="font-medium">Fintech / Comex</span>
+                                        <span className="font-medium text-right sm:text-left">Fintech / Comex</span>
                                     </div>
-                                    <div className="flex justify-between border-b border-secondary-lighter pb-2">
+                                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-secondary-lighter pb-2 gap-1 sm:gap-4">
                                         <span className="text-foreground/40">Foco</span>
-                                        <span className="font-medium">Execução Digital</span>
+                                        <span className="font-medium text-right sm:text-left">Execução Digital</span>
                                     </div>
-                                    <div className="flex justify-between border-b border-secondary-lighter pb-2">
+                                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b border-secondary-lighter pb-2 gap-1 sm:gap-4">
                                         <span className="text-foreground/40">Atuação</span>
-                                        <span className="font-medium">Global</span>
+                                        <span className="font-medium text-right sm:text-left">Global</span>
                                     </div>
-                                    <div className="flex justify-between pt-2">
+                                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center pt-2 gap-1 sm:gap-4">
                                         <span className="text-foreground/40">Status</span>
-                                        <span className="text-green-500 font-bold flex items-center">
+                                        <span className="text-green-500 font-bold flex items-center justify-end sm:justify-start">
                                             <span className="w-1.5 h-1.5 rounded-full bg-green-500 mr-2" />
                                             Operacional
                                         </span>
