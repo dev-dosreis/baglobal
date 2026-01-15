@@ -8,9 +8,42 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "BAGLOBAL | Pagamentos Internacionais e Comércio Exterior",
-  description: "Gestão avançada de pagamentos, antecipação de recebíveis e pagamento de fornecedores em USD e USDt com compliance e segurança.",
-  keywords: ["pagamentos internacionais", "comércio exterior", "fintech", "USDt", "gestão financeira"],
+  title: "BAGLOBAL | Soluções Financeiras Internacionais",
+  description: "Especialistas em pagamentos internacionais, câmbio e gestão de ativos digitais. Soluções seguras e ágeis para seu negócio global.",
+  keywords: ["pagamentos internacionais", "comércio exterior", "fintech", "USDt", "gestão financeira", "câmbio", "ativos virtuais", "PSAV"],
+  authors: [{ name: "BAGLOBAL" }],
+  openGraph: {
+    title: "BAGLOBAL | Soluções Financeiras Internacionais",
+    description: "Gestão avançada de pagamentos, antecipação de recebíveis e pagamento de fornecedores em USD e USDt.",
+    url: "https://baglobal.com.br",
+    siteName: "BAGLOBAL",
+    locale: "pt_BR",
+    type: "website",
+    images: [
+      {
+        url: "/logo-final.png",
+        width: 800,
+        height: 600,
+        alt: "BAGLOBAL Logo",
+      },
+    ],
+  },
+  icons: {
+    icon: "/logo-final.png",
+    shortcut: "/logo-final.png",
+    apple: "/logo-final.png",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 export default function RootLayout({

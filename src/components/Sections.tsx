@@ -680,6 +680,13 @@ export function Footer() {
                         v1.0 • Página publicada para fins institucionais
                     </p>
                 </div>
+
+                <div className="mt-8 pt-8 border-t border-secondary-lighter/30 text-[10px] text-foreground/40 text-justify leading-relaxed max-w-4xl mx-auto">
+                    <p className="mb-2 font-bold uppercase tracking-wider opacity-70">Disclaimer Jurídico</p>
+                    <p>
+                        A BS EMPREENDIMENTOS LTDA, pessoa jurídica de direito privado, constituída no território brasileiro, inscrita no CNPJ sob o nº 41.778.759/0001-87, com sede no Setor de Rádio e TV Sul, Quadra 701, Conjunto L, Bloco 02, nº 30, Sala 417, Parte H, Asa Sul, Brasília/DF, CEP: 70.340-906, atua como Prestadora de Serviços de Ativos Virtuais (PSAV), com a finalidade de prestar serviços de intermediação em operações com ativos virtuais — compreendendo compra e/ou venda de criptoativos. A empresa é classificada como intermediária, nos termos da Consulta Pública nº 109/2024 do Banco Central do Brasil. O licenciamento junto ao Banco Central será requerido tão logo o regulador inicie a fase de adequação legal, etapa que, até o presente momento, ainda não foi formalmente implementada. Não há necessidade de registro da CVM, uma vez que não se trata de operações/serviços com valores mobiliários.
+                    </p>
+                </div>
             </div>
         </footer>
     );
