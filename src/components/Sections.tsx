@@ -467,28 +467,53 @@ export function Institutional() {
 
 export function Contact() {
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleSubmit = async (e: any) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const form = e.target;
-        const data = new FormData(form);
+        setIsSubmitting(true);
+
+        const form = e.currentTarget;
+        const formData = new FormData(form);
+
+        // Convert FormData to object for EmailJS
+        const templateParams = {
+            nome: formData.get('nome'),
+            empresa: formData.get('empresa'),
+            email: formData.get('email'),
+            whatsapp: formData.get('whatsapp'),
+            necessidade: formData.get('necessidade'),
+            to_email: 'contato@baglobal.com.br',
+            reply_to: formData.get('email'),
+        };
 
         try {
-            const response = await fetch("https://formspree.io/f/contato@baglobal.com.br", {
-                method: "POST",
-                body: data,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
-            if (response.ok) {
+            // Send email using EmailJS
+            // Note: You'll need to configure EmailJS with:
+            // Service ID: service_baglobal
+            // Template ID: template_contact
+            // Public Key: Your EmailJS public key
+
+            const emailjs = (await import('@emailjs/browser')).default;
+
+            const response = await emailjs.send(
+                'service_baglobal',  // Replace with your EmailJS Service ID
+                'template_contact',   // Replace with your EmailJS Template ID
+                templateParams,
+                'YOUR_PUBLIC_KEY'     // Replace with your EmailJS Public Key
+            );
+
+            if (response.status === 200) {
                 setIsSubmitted(true);
                 form.reset();
             } else {
-                alert("Ocorreu um erro ao enviar. Por favor, tente novamente ou use o e-mail oficial.");
+                throw new Error('Failed to send email');
             }
         } catch (error) {
-            alert("Erro de conexão. Verifique sua internet.");
+            console.error('Email error:', error);
+            alert("Ocorreu um erro ao enviar. Por favor, tente novamente ou entre em contato diretamente pelo e-mail: contato@baglobal.com.br");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -582,8 +607,13 @@ export function Contact() {
                                     </span>
                                 </div>
 
-                                <button type="submit" className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all transform hover:-translate-y-1">
-                                    Enviar solicitação
+
+                                <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                                >
+                                    {isSubmitting ? 'Enviando...' : 'Enviar solicitação'}
                                 </button>
                             </form>
                         )}
