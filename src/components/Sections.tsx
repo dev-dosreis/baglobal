@@ -16,24 +16,27 @@ export function Header() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 20);
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+        return () => {
+            document.body.style.overflow = "unset";
         };
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+    }, [isMobileMenuOpen]);
 
     const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
     return (
         <header
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-                ? "bg-background-base/80 backdrop-blur-md border-b border-secondary-lighter py-4"
+            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled || isMobileMenuOpen
+                ? "bg-background-base/90 backdrop-blur-xl border-b border-secondary-lighter py-4"
                 : "bg-transparent py-6"
                 }`}
         >
             <div className="container mx-auto px-6 flex items-center justify-between max-w-[1200px]">
-                <Link href="/" className="flex items-center group relative z-[60]">
+                <Link href="/" className="flex items-center group relative z-[70]">
                     <img
                         src="/logo-final.png"
                         alt="BAGLOBAL"
@@ -70,36 +73,47 @@ export function Header() {
 
                 {/* Mobile Nav Toggle */}
                 <button
-                    className="md:hidden text-foreground relative z-[60] p-2"
+                    className="md:hidden text-foreground relative z-[70] p-2 hover:bg-secondary/50 rounded-lg transition-colors"
                     onClick={toggleMobileMenu}
                     aria-label="Toggle Menu"
                 >
                     {isMobileMenuOpen ? (
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8 text-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8 text-primary">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     ) : (
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                         </svg>
                     )}
                 </button>
 
                 {/* Mobile Menu Overlay */}
-                <div className={`fixed inset-0 bg-background-base/95 backdrop-blur-xl z-[55] flex flex-col items-center justify-center transition-all duration-500 ease-in-out md:hidden ${isMobileMenuOpen ? "opacity-100 translate-x-0" : "opacity-0 translate-x-full pointer-events-none"
-                    }`}>
-                    <nav className="flex flex-col items-center space-y-8">
-                        {navLinks.map((link) => (
-                            <Link
-                                key={link.name}
-                                href={link.href}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="text-2xl font-bold text-foreground hover:text-primary transition-colors"
-                            >
-                                {link.name}
-                            </Link>
-                        ))}
-                        <div className="flex flex-col items-center space-y-6 pt-6 border-t border-secondary-lighter w-full max-w-[200px]">
+                <div className={`fixed inset-0 bg-background-base z-[60] flex flex-col transition-all duration-500 ease-in-out md:hidden ${isMobileMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-full pointer-events-none"
+                    }`}
+                    style={{ height: '100dvh' }}>
+
+                    {/* Interior Scroll Container */}
+                    <div className="flex-1 overflow-y-auto px-6 pt-32 pb-12 w-full flex flex-col items-center">
+                        <nav className="flex flex-col items-center space-y-10 w-full mb-12">
+                            {navLinks.map((link, index) => (
+                                <Link
+                                    key={link.name}
+                                    href={link.href}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className={`text-2xl font-bold text-foreground hover:text-primary transition-all duration-300 ${isMobileMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                                        }`}
+                                    style={{ transitionDelay: `${index * 50}ms` }}
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                        </nav>
+
+                        <div className={`flex flex-col items-center space-y-6 pt-10 border-t border-secondary-lighter w-full max-w-[280px] transition-all duration-500 ${isMobileMenuOpen ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                            }`}
+                            style={{ transitionDelay: `${navLinks.length * 50}ms` }}
+                        >
                             <Link
                                 href="/login"
                                 onClick={() => setIsMobileMenuOpen(false)}
@@ -110,12 +124,15 @@ export function Header() {
                             <Link
                                 href="#contato"
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="bg-primary hover:bg-primary-dark text-white px-10 py-4 rounded-2xl text-lg font-bold transition-all shadow-xl shadow-primary/20 w-full text-center"
+                                className="bg-primary hover:bg-primary-dark text-white px-10 py-5 rounded-2xl text-lg font-bold transition-all shadow-xl shadow-primary/30 w-full text-center active:scale-95"
                             >
                                 Solicitar contato
                             </Link>
                         </div>
-                    </nav>
+                    </div>
+
+                    {/* Background Decorative Element */}
+                    <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-primary/5 to-transparent pointer-events-none" />
                 </div>
             </div>
         </header>
