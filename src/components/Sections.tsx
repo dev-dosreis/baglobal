@@ -513,12 +513,12 @@ export function Contact() {
                 form.reset();
             } else {
                 const errorData = await response.json();
-                console.error("API error:", errorData);
+                console.error("❌ Erro na API:", errorData);
                 throw new Error(errorData.error || "Erro ao enviar formulário");
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('❌ Erro no envio:', error);
-            alert("Ocorreu um erro ao enviar. Por favor, tente novamente ou entre em contato diretamente pelo e-mail: contato@baglobal.com.br");
+            alert(`Erro ao enviar: ${error.message}\n\nTente novamente ou use o e-mail: contato@baglobal.com.br`);
         } finally {
             setIsSubmitting(false);
         }

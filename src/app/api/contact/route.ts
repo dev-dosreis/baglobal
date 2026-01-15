@@ -4,19 +4,22 @@ import { Resend } from 'resend';
 export async function POST(request: Request) {
     try {
         const body = await request.json();
+        console.log('📩 Recebido pedido de contato:', body);
+
         const { nome, empresa, email, whatsapp, necessidade, consentimento, origem, data_envio, page_url, user_agent } = body;
 
         // Basic validation
         if (!nome || !email || !empresa) {
-            return NextResponse.json({ error: 'Campos obrigatórios faltando' }, { status: 400 });
+            console.error('❌ Campos obrigatórios faltando:', { nome, email, empresa });
+            return NextResponse.json({ error: 'Campos obrigatórios (nome, email ou empresa) não preenchidos' }, { status: 400 });
         }
 
         const resendApiKey = process.env.RESEND_API_KEY;
         const adminEmail = process.env.ADMIN_EMAIL || 'contato@baglobal.com.br';
 
         if (!resendApiKey || resendApiKey.includes('YOUR_API_KEY')) {
-            console.error('RESEND_API_KEY não configurada');
-            return NextResponse.json({ error: 'Erro de configuração no servidor' }, { status: 500 });
+            console.error('❌ RESEND_API_KEY não configurada ou inválida');
+            return NextResponse.json({ error: 'Erro de configuração no servidor (API Key)' }, { status: 500 });
         }
 
         const resend = new Resend(resendApiKey);
@@ -66,10 +69,16 @@ export async function POST(request: Request) {
         });
 
         if (error) {
-            console.error('Erro Resend:', error);
-            return NextResponse.json({ error: error.message }, { status: 400 });
+            console.error('❌ Erro detectado pelo Resend:', error);
+            // If the error is about unverified sender, provide a clearer message
+            const errorMessage = error.message || 'Erro desconhecido no provedor de e-mail';
+            return NextResponse.json({
+                error: errorMessage,
+                code: (error as any).name || 'RESEND_ERROR'
+            }, { status: 400 });
         }
 
+        console.log('✅ Email enviado com sucesso para:', adminEmail);
         return NextResponse.json({ message: 'Email enviado com sucesso', id: data?.id });
 
     } catch (error) {
