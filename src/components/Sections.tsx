@@ -471,85 +471,63 @@ export function Contact() {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setIsSubmitting(true);
 
         const form = e.currentTarget;
         const formData = new FormData(form);
 
-        // Convert FormData to object for EmailJS
-        const templateParams = {
+        // Anti-spam: Honeypot check
+        const honeypot = formData.get('website');
+        if (honeypot) {
+            // Silently fail for bots
+            console.log('Bot detected via honeypot');
+            setIsSubmitted(true);
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        const data = {
             nome: formData.get('nome'),
             empresa: formData.get('empresa'),
             email: formData.get('email'),
             whatsapp: formData.get('whatsapp'),
             necessidade: formData.get('necessidade'),
-            to_email: 'contato@baglobal.com.br',
-            reply_to: formData.get('email'),
-            timestamp: new Date().toLocaleString('pt-BR', {
-                timeZone: 'America/Sao_Paulo',
-                dateStyle: 'short',
-                timeStyle: 'short'
-            }),
+            _subject: "Novo contato via Site - BA Global", // Formspree subject
+            origem: "/contato",
+            data_envio: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
+            page_url: typeof window !== 'undefined' ? window.location.href : '',
+            user_agent: typeof window !== 'undefined' ? window.navigator.userAgent : '',
         };
 
-        // Log form data for debugging
-        console.log('📧 Enviando formulário com os seguintes dados:', templateParams);
+        const endpoint = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT;
+
+        if (!endpoint || endpoint.includes('YOUR_ENDPOINT_HERE')) {
+            alert("Erro de configuração: Endpoint do formulário não configurado. Por favor, entre em contato pelo email: contato@baglobal.com.br");
+            setIsSubmitting(false);
+            return;
+        }
 
         try {
-            const emailjs = (await import('@emailjs/browser')).default;
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
 
-            // EmailJS Configuration - All credentials configured
-            const SERVICE_ID = 'service_i87s8hl';       // ✅ SMTP Server
-            const TEMPLATE_ADMIN = 'template_hk9szxu';  // ✅ Admin notification
-            const TEMPLATE_USER = 'template_0ggqstp';   // ✅ User confirmation
-            const PUBLIC_KEY = 'ROHQIBffArNTKGE_i';     // ✅ Public Key
-
-            // Send notification to admin (contato@baglobal.com.br)
-            console.log('📨 Enviando email para o admin...');
-            const adminResponse = await emailjs.send(
-                SERVICE_ID,
-                TEMPLATE_ADMIN,
-                templateParams,
-                PUBLIC_KEY
-            );
-
-            console.log('✅ Email admin enviado com sucesso:', adminResponse);
-
-            // Send confirmation email to user
-            console.log('📨 Enviando email de confirmação para o cliente...');
-            const userResponse = await emailjs.send(
-                SERVICE_ID,
-                TEMPLATE_USER,
-                templateParams,
-                PUBLIC_KEY
-            );
-
-            console.log('✅ Email de confirmação enviado com sucesso:', userResponse);
-
-            if (adminResponse.status === 200 && userResponse.status === 200) {
+            if (response.ok) {
                 setIsSubmitted(true);
                 form.reset();
-                console.log('🎉 Ambos os emails foram enviados com sucesso!');
             } else {
-                throw new Error('Um ou mais emails falharam ao enviar');
+                const errorData = await response.json();
+                console.error("Formspree error:", errorData);
+                throw new Error(errorData.error || "Erro ao enviar formulário");
             }
-        } catch (error: any) {
-            console.error('❌ Erro ao enviar emails:', error);
-
-            let errorMessage = "Ocorreu um erro ao enviar. ";
-
-            // Handle EmailJS specific error object { status: ..., text: ... }
-            if (error?.text) {
-                errorMessage += `Detalhes: ${error.text} (Status: ${error.status})`;
-            } else if (error instanceof Error) {
-                errorMessage += `Detalhes: ${error.message}`;
-            } else {
-                errorMessage += `Erro desconhecido: ${JSON.stringify(error)}`;
-            }
-
-            errorMessage += "\n\nPor favor, tente novamente ou entre em contato diretamente pelo e-mail: contato@baglobal.com.br";
-
-            alert(errorMessage);
+        } catch (error) {
+            console.error('❌ Erro no envio:', error);
+            alert("Ocorreu um erro ao enviar. Por favor, tente novamente ou entre em contato diretamente pelo e-mail: contato@baglobal.com.br");
         } finally {
             setIsSubmitting(false);
         }
@@ -592,8 +570,8 @@ export function Contact() {
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                     </svg>
                                 </div>
-                                <h3 className="text-2xl font-bold">Solicitação enviada!</h3>
-                                <p className="text-foreground-muted">Recebemos sua mensagem. Em breve um de nossos especialistas entrará em contato.</p>
+                                <h3 className="text-2xl font-bold">Solicitação enviada com sucesso!</h3>
+                                <p className="text-foreground-muted">Um especialista entrará em contato em até 24h úteis.</p>
                                 <button
                                     onClick={() => setIsSubmitted(false)}
                                     className="text-primary hover:underline text-sm font-bold pt-4"
@@ -606,6 +584,9 @@ export function Contact() {
                                 className="space-y-6 bg-background-base/50 p-8 rounded-3xl border border-secondary-lighter"
                                 onSubmit={handleSubmit}
                             >
+                                {/* Honeypot field (hidden) */}
+                                <input type="text" name="website" style={{ display: 'none' }} tabIndex={-1} autoComplete="off" />
+
                                 <div className="grid md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label className="text-xs font-bold uppercase tracking-wider text-foreground/60">Nome completo*</label>
