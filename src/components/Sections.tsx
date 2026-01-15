@@ -485,33 +485,71 @@ export function Contact() {
             necessidade: formData.get('necessidade'),
             to_email: 'contato@baglobal.com.br',
             reply_to: formData.get('email'),
+            timestamp: new Date().toLocaleString('pt-BR', {
+                timeZone: 'America/Sao_Paulo',
+                dateStyle: 'short',
+                timeStyle: 'short'
+            }),
         };
 
-        try {
-            // Send email using EmailJS
-            // Note: You'll need to configure EmailJS with:
-            // Service ID: service_baglobal
-            // Template ID: template_contact
-            // Public Key: Your EmailJS public key
+        // Log form data for debugging
+        console.log('📧 Enviando formulário com os seguintes dados:', templateParams);
 
+        try {
             const emailjs = (await import('@emailjs/browser')).default;
 
-            const response = await emailjs.send(
-                'service_baglobal',  // Replace with your EmailJS Service ID
-                'template_contact',   // Replace with your EmailJS Template ID
+            // EmailJS Configuration - All credentials configured
+            const SERVICE_ID = 'service_i87s8hl';       // ✅ SMTP Server
+            const TEMPLATE_ADMIN = 'template_hk9szxu';  // ✅ Admin notification
+            const TEMPLATE_USER = 'template_0ggqstp';   // ✅ User confirmation
+            const PUBLIC_KEY = 'ROHQIBffArNTKGE_i';     // ✅ Public Key
+
+            // Send notification to admin (contato@baglobal.com.br)
+            console.log('📨 Enviando email para o admin...');
+            const adminResponse = await emailjs.send(
+                SERVICE_ID,
+                TEMPLATE_ADMIN,
                 templateParams,
-                'YOUR_PUBLIC_KEY'     // Replace with your EmailJS Public Key
+                PUBLIC_KEY
             );
 
-            if (response.status === 200) {
+            console.log('✅ Email admin enviado com sucesso:', adminResponse);
+
+            // Send confirmation email to user
+            console.log('📨 Enviando email de confirmação para o cliente...');
+            const userResponse = await emailjs.send(
+                SERVICE_ID,
+                TEMPLATE_USER,
+                templateParams,
+                PUBLIC_KEY
+            );
+
+            console.log('✅ Email de confirmação enviado com sucesso:', userResponse);
+
+            if (adminResponse.status === 200 && userResponse.status === 200) {
                 setIsSubmitted(true);
                 form.reset();
+                console.log('🎉 Ambos os emails foram enviados com sucesso!');
             } else {
-                throw new Error('Failed to send email');
+                throw new Error('Um ou mais emails falharam ao enviar');
             }
         } catch (error) {
-            console.error('Email error:', error);
-            alert("Ocorreu um erro ao enviar. Por favor, tente novamente ou entre em contato diretamente pelo e-mail: contato@baglobal.com.br");
+            console.error('❌ Erro ao enviar emails:', error);
+
+            // More detailed error message
+            let errorMessage = "Ocorreu um erro ao enviar. ";
+
+            if (error instanceof Error) {
+                if (error.message.includes('SERVICE_ID')) {
+                    errorMessage += "Configuração do EmailJS pendente. ";
+                } else {
+                    errorMessage += `Detalhes: ${error.message}. `;
+                }
+            }
+
+            errorMessage += "Por favor, tente novamente ou entre em contato diretamente pelo e-mail: contato@baglobal.com.br";
+
+            alert(errorMessage);
         } finally {
             setIsSubmitting(false);
         }
