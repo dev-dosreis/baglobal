@@ -492,27 +492,18 @@ export function Contact() {
             email: formData.get('email'),
             whatsapp: formData.get('whatsapp'),
             necessidade: formData.get('necessidade'),
-            _subject: "Novo contato via Site - BA Global", // Formspree subject
+            consentimento: true,
             origem: "/contato",
             data_envio: new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' }),
             page_url: typeof window !== 'undefined' ? window.location.href : '',
             user_agent: typeof window !== 'undefined' ? window.navigator.userAgent : '',
         };
 
-        const endpoint = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT;
-
-        if (!endpoint || endpoint.includes('YOUR_ENDPOINT_HERE')) {
-            alert("Erro de configuração: Endpoint do formulário não configurado. Por favor, entre em contato pelo email: contato@baglobal.com.br");
-            setIsSubmitting(false);
-            return;
-        }
-
         try {
-            const response = await fetch(endpoint, {
+            const response = await fetch('/api/contact', {
                 method: 'POST',
                 body: JSON.stringify(data),
                 headers: {
-                    'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 }
             });
@@ -522,7 +513,7 @@ export function Contact() {
                 form.reset();
             } else {
                 const errorData = await response.json();
-                console.error("Formspree error:", errorData);
+                console.error("API error:", errorData);
                 throw new Error(errorData.error || "Erro ao enviar formulário");
             }
         } catch (error) {
