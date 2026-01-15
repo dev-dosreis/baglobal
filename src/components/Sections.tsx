@@ -533,21 +533,21 @@ export function Contact() {
             } else {
                 throw new Error('Um ou mais emails falharam ao enviar');
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('❌ Erro ao enviar emails:', error);
 
-            // More detailed error message
             let errorMessage = "Ocorreu um erro ao enviar. ";
 
-            if (error instanceof Error) {
-                if (error.message.includes('SERVICE_ID')) {
-                    errorMessage += "Configuração do EmailJS pendente. ";
-                } else {
-                    errorMessage += `Detalhes: ${error.message}. `;
-                }
+            // Handle EmailJS specific error object { status: ..., text: ... }
+            if (error?.text) {
+                errorMessage += `Detalhes: ${error.text} (Status: ${error.status})`;
+            } else if (error instanceof Error) {
+                errorMessage += `Detalhes: ${error.message}`;
+            } else {
+                errorMessage += `Erro desconhecido: ${JSON.stringify(error)}`;
             }
 
-            errorMessage += "Por favor, tente novamente ou entre em contato diretamente pelo e-mail: contato@baglobal.com.br";
+            errorMessage += "\n\nPor favor, tente novamente ou entre em contato diretamente pelo e-mail: contato@baglobal.com.br";
 
             alert(errorMessage);
         } finally {
