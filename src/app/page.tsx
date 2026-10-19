@@ -1,21 +1,24 @@
+import type { Metadata } from "next";
 import { Header, TradingViewTicker, Hero, Solutions, Timeline, Compliance, Institutional, Contact, FAQ, Footer, WhatsAppWidget } from "@/components/Sections";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <>
       <Header />
-      <div className="pt-20"> {/* Offset for sticky header */}
+      <main id="conteudo" tabIndex={-1} className="min-h-screen pt-22">
         <TradingViewTicker />
-      </div>
-      <Hero />
-      <Solutions />
-      <Timeline />
-      <Compliance />
-      <Institutional />
-      <Contact />
-      <FAQ />
+        <Hero />
+        <Solutions />
+        <Timeline />
+        <Compliance />
+        <Institutional />
+        <Contact />
+        <FAQ />
+      </main>
       <Footer />
       <WhatsAppWidget />
-    </main>
+    </>
   );
 }

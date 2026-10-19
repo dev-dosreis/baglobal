@@ -30,9 +30,9 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-# .env* (Uncommented at user request to commit API key)
-#! .env*
+# Local credentials must never be versioned
+.env*
+!.env.example
 
 # vercel
 .vercel
@@ -40,3 +40,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# QA artifacts
+/playwright-report
+/test-results

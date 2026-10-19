@@ -1,88 +1,58 @@
+import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { contactEmail, contactEmailConfig, contactSchema } from '@/lib/contact';
+import { ContactRequestError, contactOrigin, readContactBody } from '@/lib/contact-request';
+import { contactRateLimiter } from '@/lib/rate-limit';
+
+export const runtime = 'nodejs';
+export const maxDuration = 20;
+
+function failure(status: number, error: string, requestId: string, retryAfter?: number) {
+  return NextResponse.json({ success: false, error, requestId }, {
+    status, headers: {
+      'Cache-Control': 'no-store',
+      ...(retryAfter ? { 'Retry-After': String(retryAfter) } : {}),
+    },
+  });
+}
+
+async function deliverContact(contact: Parameters<typeof contactEmail>[0], origin: string, requestId: string) {
+  const config = contactEmailConfig();
+  if (!config) return failure(503, 'O contato está temporariamente indisponível. Tente novamente mais tarde.', requestId);
+  try {
+    const { data, error } = await new Resend(config.apiKey).emails.send({
+      from: config.from, to: config.to, ...contactEmail(contact, origin),
+    }, { signal: AbortSignal.timeout(8000) });
+    if (error || !data?.id) throw new Error('Email not confirmed');
+    return NextResponse.json({ success: true, message: 'Contato enviado com sucesso.' }, {
+      headers: { 'Cache-Control': 'no-store' },
+    });
+  } catch {
+    console.error('contact_delivery_failed', { requestId });
+    return failure(502, 'Não foi possível enviar sua mensagem. Tente novamente mais tarde.', requestId);
+  }
+}
 
 export async function POST(request: Request) {
-    try {
-        const body = await request.json();
-        console.log('📩 Recebido pedido de contato:', body);
-
-        const { nome, empresa, email, whatsapp, necessidade, consentimento, origem, data_envio, page_url, user_agent } = body;
-
-        // Basic validation
-        if (!nome || !email || !empresa) {
-            console.error('❌ Campos obrigatórios faltando:', { nome, email, empresa });
-            return NextResponse.json({ error: 'Campos obrigatórios (nome, email ou empresa) não preenchidos' }, { status: 400 });
-        }
-
-        const resendApiKey = process.env.RESEND_API_KEY;
-        const adminEmail = process.env.ADMIN_EMAIL || 'contato@baglobal.com.br';
-
-        if (!resendApiKey || resendApiKey.includes('YOUR_API_KEY')) {
-            console.error('❌ RESEND_API_KEY não configurada ou inválida');
-            return NextResponse.json({ error: 'Erro de configuração no servidor (API Key)' }, { status: 500 });
-        }
-
-        const resend = new Resend(resendApiKey);
-
-        // Send email to Admin
-        const { data, error } = await resend.emails.send({
-            from: 'onboarding@resend.dev', // Default Resend sender
-            to: adminEmail,
-            replyTo: email,
-            subject: `Novo Lead - BA Global: ${empresa}`,
-            html: `
-                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-                    <h2 style="color: #FF6600;">Novo Lead Recebido</h2>
-                    <p>Você recebeu um novo contato através do site.</p>
-                    
-                    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                        <tr style="background-color: #f8f9fa;">
-                            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Nome</td>
-                            <td style="padding: 10px; border: 1px solid #ddd;">${nome}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Empresa</td>
-                            <td style="padding: 10px; border: 1px solid #ddd;">${empresa}</td>
-                        </tr>
-                        <tr style="background-color: #f8f9fa;">
-                            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Email</td>
-                            <td style="padding: 10px; border: 1px solid #ddd;">${email}</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">WhatsApp</td>
-                            <td style="padding: 10px; border: 1px solid #ddd;">${whatsapp}</td>
-                        </tr>
-                        <tr style="background-color: #f8f9fa;">
-                            <td style="padding: 10px; border: 1px solid #ddd; font-weight: bold;">Necessidade</td>
-                            <td style="padding: 10px; border: 1px solid #ddd;">${necessidade}</td>
-                        </tr>
-                     </table>
-
-                    <h3 style="margin-top: 30px; font-size: 14px; color: #666;">Metadados</h3>
-                    <ul style="font-size: 12px; color: #777;">
-                        <li><strong>Data:</strong> ${data_envio}</li>
-                        <li><strong>Origem:</strong> ${origem}</li>
-                        <li><strong>URL:</strong> ${page_url}</li>
-                    </ul>
-                </div>
-            `
-        });
-
-        if (error) {
-            console.error('❌ Erro detectado pelo Resend:', error);
-            // If the error is about unverified sender, provide a clearer message
-            const errorMessage = error.message || 'Erro desconhecido no provedor de e-mail';
-            return NextResponse.json({
-                error: errorMessage,
-                code: (error as any).name || 'RESEND_ERROR'
-            }, { status: 400 });
-        }
-
-        console.log('✅ Email enviado com sucesso para:', adminEmail);
-        return NextResponse.json({ message: 'Email enviado com sucesso', id: data?.id });
-
-    } catch (error) {
-        console.error('Erro interno:', error);
-        return NextResponse.json({ error: 'Erro interno no servidor' }, { status: 500 });
-    }
+  const requestId = randomUUID();
+  let origin: string;
+  let body: unknown;
+  try {
+    origin = contactOrigin(request);
+    body = await readContactBody(request);
+  } catch (error) {
+    if (error instanceof ContactRequestError) return failure(error.status, error.publicMessage, requestId);
+    return failure(400, 'Verifique os dados do formulário.', requestId);
+  }
+  try {
+    const limit = await contactRateLimiter.consume(request);
+    if (!limit.allowed) return failure(429, 'Muitas tentativas. Aguarde alguns minutos e tente novamente.', requestId, limit.retryAfter);
+  } catch {
+    console.error('contact_rate_limit_unavailable', { requestId });
+    return failure(503, 'O contato está temporariamente indisponível. Tente novamente mais tarde.', requestId);
+  }
+  const validated = contactSchema.safeParse(body);
+  if (!validated.success) return failure(400, 'Verifique os dados do formulário e o consentimento de contato.', requestId);
+  return deliverContact(validated.data, origin, requestId);
 }

@@ -1,9 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = { title: "Termos de Uso", description: "Condições de uso do site institucional da BAGLOBAL.", alternates: { canonical: "/terms" } };
 
 export default function Terms() {
     return (
-        <main className="min-h-screen bg-background-base text-foreground font-inter p-8 md:p-24">
-            <div className="max-w-3xl mx-auto border border-secondary-lighter p-8 md:p-12 rounded-3xl bg-secondary/20">
+        <main id="conteudo" tabIndex={-1} className="legal-page min-h-screen bg-background-base text-foreground font-inter p-8 md:p-24">
+            <div className="legal-card max-w-3xl mx-auto border border-secondary-lighter p-8 md:p-12 rounded-3xl bg-secondary/20">
                 <Link href="/" className="inline-flex items-center text-primary mb-12 hover:underline">
                     ← Voltar para Home
                 </Link>
@@ -17,7 +20,7 @@ export default function Terms() {
                     <h2 className="text-xl font-bold text-foreground">3. Limitação de Responsabilidade</h2>
                     <p>As condições de serviços financeiros variam conforme análise individual e enquadramento de compliance.</p>
                 </div>
-                <div className="mt-12 pt-8 border-t border-secondary-lighter text-xs text-foreground/40">
+                <div className="mt-12 pt-8 border-t border-secondary-lighter text-xs text-foreground-muted">
                     Última atualização: 13/01/2026
                 </div>
             </div>

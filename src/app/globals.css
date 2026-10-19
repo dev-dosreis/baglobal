@@ -84,3 +84,33 @@ body {
 .animation-delay-4000 {
   animation-delay: 4s;
 }
+/* Accessibility and shared controls. Preserve the existing brand palette. */
+html { scroll-padding-top: 6.5rem; }
+main { outline: none; }
+section[id] { scroll-margin-top: 6.5rem; }
+body { line-height: 1.6; }
+button, a, input, select, summary { -webkit-tap-highlight-color: transparent; }
+button, summary { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 5px; }
+input:focus-visible, select:focus-visible { outline-offset: 2px; }
+.skip-link { position: fixed; top: 1rem; left: 1rem; z-index: 100; padding: .75rem 1.25rem; transform: translateY(-200%); border-radius: .5rem; background: var(--color-primary); color: var(--color-background-base); font-weight: 700; }
+.skip-link:focus { transform: translateY(0); }
+.btn-primary { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; border-radius: 12px; background: var(--color-primary); color: var(--color-background-base); font-weight: 700; transition: background-color .2s; }
+.btn-primary:hover { background: var(--color-primary-dark); }
+.form-label { display: block; margin-bottom: .5rem; color: var(--color-foreground); font-size: .875rem; font-weight: 600; }
+.text-glow { text-shadow: 0 0 20px rgb(247 100 0 / .15); }
+.faq-item summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; list-style: none; }
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::after { content: '+'; color: var(--color-primary); font-size: 1.75rem; line-height: 1; flex-shrink: 0; }
+.faq-item[open] summary::after { content: '−'; }
+.site-header { isolation: isolate; }
+@media (max-width: 479px) {
+  .contact-email { font-size: .875rem; }
+  .legal-page { padding: 4rem 1rem; }
+  .legal-card { padding: 1.5rem; }
+  .legal-page h1 { font-size: 1.875rem; overflow-wrap: anywhere; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
