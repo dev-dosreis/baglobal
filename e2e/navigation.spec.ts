@@ -58,6 +58,33 @@ test("atalho de teclado permite pular para o conteúdo principal", async ({ page
   await expect(page.getByRole("main")).toBeFocused();
 });
 
+test("atalho flutuante não cobre as ações principais no celular", async ({ page }) => {
+  for (const viewport of [{ width: 320, height: 640 }, { width: 375, height: 667 }, { width: 390, height: 844 }]) {
+    await page.setViewportSize(viewport);
+    await page.goto("/");
+
+    const secondaryAction = page.getByRole("link", { name: "Ver soluções" });
+    const floatingContact = page.getByRole("link", { name: "Fale conosco no WhatsApp" });
+    const overlaps = await secondaryAction.evaluate((action) => {
+      const widget = document.querySelector<HTMLElement>("[data-floating-contact]");
+      if (!widget) throw new Error("Atalho de WhatsApp não encontrado");
+      const actionRect = action.getBoundingClientRect();
+      const widgetRect = widget.getBoundingClientRect();
+      return actionRect.left < widgetRect.right
+        && actionRect.right > widgetRect.left
+        && actionRect.top < widgetRect.bottom
+        && actionRect.bottom > widgetRect.top;
+    });
+
+    await expect(secondaryAction).toBeVisible();
+    await expect(floatingContact).toBeHidden();
+    expect(overlaps).toBe(false);
+
+    await page.locator("#solucoes").scrollIntoViewIfNeeded();
+    await expect(floatingContact).toBeVisible();
+  }
+});
+
 test.describe("navegação sem JavaScript", () => {
   test.use({ javaScriptEnabled: false });
 

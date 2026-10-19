@@ -54,7 +54,7 @@ export function Contact() {
   }
 
   return (
-    <section id="contato" aria-labelledby="contact-title" className="py-20 md:py-24">
+    <section id="contato" data-floating-contact-boundary aria-labelledby="contact-title" className="py-20 md:py-24">
       <div className="mx-auto max-w-[1200px] px-6">
         <div className="grid gap-10 rounded-3xl border border-secondary-lighter bg-secondary p-6 md:p-12 lg:grid-cols-2 lg:gap-16">
           <div>

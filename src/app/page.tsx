@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Header, TradingViewTicker, Hero, Solutions, Timeline, Compliance, Institutional, Contact, FAQ, Footer, WhatsAppWidget } from "@/components/Sections";
+import { Header, TradingViewTicker, Hero, Solutions, Timeline, Compliance, Institutional, Contact, FAQ, Footer } from "@/components/Sections";
+import { WhatsAppWidget } from "@/components/WhatsAppWidget";
 
 export const metadata: Metadata = { alternates: { canonical: "/" } };
 

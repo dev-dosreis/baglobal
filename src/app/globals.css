@@ -104,6 +104,9 @@ input:focus-visible, select:focus-visible { outline-offset: 2px; }
 .faq-item summary::after { content: '+'; color: var(--color-primary); font-size: 1.75rem; line-height: 1; flex-shrink: 0; }
 .faq-item[open] summary::after { content: '−'; }
 .site-header { isolation: isolate; }
+@media (max-width: 1279px) {
+  [data-floating-contact][data-mobile-visible="false"] { display: none; }
+}
 @media (max-width: 479px) {
   .contact-email { font-size: .875rem; }
   .legal-page { padding: 4rem 1rem; }
